@@ -117,7 +117,7 @@ En la tabla 3 se presentan los requerimientos del sistema.
 |Modos|1.1 | **"Play**" El sistema estará ejecutando el juego en la pantalla neopixel y mostrará el score en el menú|
 |Modos|1.1.1 | La pantalla LCD mostrará el puntaje y permitirá pausar el juego|
 |Modos|1.1.2 | Se podrá finalizar el juego|
-|Modos|1.2 | **"Score"** El sistema mostrará los puntajes más altos en la pantalla LCD. UN total de 10 marcas.|
+|Modos|1.2 | **"Score"** El sistema mostrará los puntajes más altos en la pantalla LCD. Un total de 10 marcas.|
 |Modos|1.2.1 | Se podrán borrar los puntajes|
 |Modos|1.3 | **"Dificultad"** El sistema permitirá seleccionar la dificultad del juego. *"Fácil"*, *"Medio"* y *"Difícil"*. Cambia la velocidad con la que se ejecuta el movimiento de la serpiente.|
 |Configuración|2.1 | El sistema permitirá configurar el juego utilizando un encoder.|
@@ -131,7 +131,7 @@ En la tabla 3 se presentan los requerimientos del sistema.
 |Pantalla| 4.2 | El juego se mostrará en la matriz de neopixeles.|
 |Pantalla| 4.2.1 | Se visualizará la serpiente, el cuerpo de un color y la cabeza de la serpiente de otro color|
 |Pantalla| 4.2.2 | Los frutos se visualizarán de un color distinto al de la serpiente|
-|Alimentación| 5.1 | El sistema funcionará con una fuente de 5V|
+|Alimentación| 5.1 | El sistema funcionará con una fuente de 5 V|
 |Costo| 6.1 | El costo del proyecto no superará los $15000 (sin tener en cuenta la placa de desarrollo y la matriz de neopixeles)|
 |Tiempo de ejecución| 7.1 | El proyecto se entregará antes del 17 de Septiembre de 2024.|
  |Manual de uso y Documentación| 8.1 | Se entregará un manual de uso y documentación del proyecto.| El prototipo se entregará acompañado de el código fuente que estará disponible en un repositorio de github, junto con la lista de materiales, un informe de avance, un informe final, requisitos logrados|
