@@ -40,16 +40,14 @@
 #ifndef PR_LCD_H
 #define PR_LCD_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 /*********************************************************************************************************
  *** INCLUDES GLOBALES
 *********************************************************************************************************/
 
-#include "Tdatos.h"
-#include <Arduino.h>
+#include "mbed.h"
+#include "arm_book_lib.h"
+#include <stdio.h>
 
 
 /*********************************************************************************************************
@@ -112,31 +110,6 @@ extern "C" {
 #define DATA                    1
 #define FOUR_BITS               2
 
-
-#define     LCD_RS_BUS_DIR      8       //!< inicialización del pin
-#define     LCD_RW_BUS_DIR      7
-#define     LCD_E_BUS_DIR       6
-#define     LCD_D4_BUS_DIR      9 
-#define     LCD_D5_BUS_DIR      10
-#define     LCD_D6_BUS_DIR      11
-#define     LCD_D7_BUS_DIR      12
-#define     LCD_DISPLAY         PORTB	//!< define el puerto dnde esta conectado el bus
-
-#define     LCD_RS(x) 			digitalWrite(LCD_RS_BUS_DIR, x)	
-#define     LCD_RW(x) 			digitalWrite(LCD_RW_BUS_DIR, x)	
-#define     LCD_E(x) 			digitalWrite(LCD_E_BUS_DIR,  x)	
-#define     LCD_D4(x)           digitalWrite(LCD_D4_BUS_DIR, x)
-#define     LCD_D5(x)           digitalWrite(LCD_D5_BUS_DIR, x)
-#define     LCD_D6(x)           digitalWrite(LCD_D6_BUS_DIR, x)
-#define     LCD_D7(x)           digitalWrite(LCD_D7_BUS_DIR, x)
-
-
-
-#define     LCD_SIMULADOR_ON     1
-#define     LCD_SIMULADOR_OFF    0
-
-#define     LCD_SIMULADOR       LCD_SIMULADOR_ON
-
 /*********************************************************************************************************
  *** MACROS GLOBALES
 *********************************************************************************************************/
@@ -171,12 +144,8 @@ void LCD_CursorOff (void);
 void LCD_MoveCursorRight(void);
 void LCD_MoveCursorLeft(void);
 void LCD_InitCGRAM (void);
-void LCD_Init(uint8_t lines, uint8_t cursor, uint8_t dot_format);
+void LCD_Init(uint8_t lines, uint8_t cursor, uint8_t dot_format, uint8_t mode);
 
-
-#ifdef __cplusplus
-}
-#endif
 
 
 #endif /* PR_LCD_H */

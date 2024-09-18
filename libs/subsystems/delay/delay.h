@@ -70,6 +70,7 @@ void delayWrite(delay_t *delay, uint64_t duration);
 
 void delay_1ms (void);
 
+void delay_1ms_init(void);
 
 #ifdef __cplusplus
 }

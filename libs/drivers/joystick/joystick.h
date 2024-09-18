@@ -1,18 +1,18 @@
 /*********************************************************************************************************
  *
- * \file    ${file_name}
- * \brief   Librería para el manejo de matriz de puntos
- * \date    ${date}
- * \author  Nicolás Ferragamo
- * \version 1.0
+ * \file		${file_name}
+ * \brief		
+ * \date		${date}
+ * \author		
+ * \version
 *********************************************************************************************************/
 
 /*********************************************************************************************************
  *** MODULO
 *********************************************************************************************************/
 
-#ifndef __TEMP_SENSOR_H
-#define __TEMP_SENSOR_H
+#ifndef _JOYSTICK_H
+#define _JOYSTICK_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -29,17 +29,20 @@ extern "C" {
  *** DEFINES GLOBALES
 *********************************************************************************************************/
 
+
 /*********************************************************************************************************
  *** MACROS GLOBALES
 *********************************************************************************************************/
-#ifndef _RESERVED_BITS
-#define _RESERVED_BITS
-#define  reserved_bits(x,y,z)   uint8_t reserved_bits##x[z-y+1];
-#endif
+
+
 /*********************************************************************************************************
  *** TIPO DE DATOS GLOBALES
 *********************************************************************************************************/
-
+typedef struct
+{
+    uint16_t eje_x;
+    uint16_t eje_y;
+} joystick_t;
 
 /*********************************************************************************************************
  *** VARIABLES GLOBALES
@@ -49,18 +52,14 @@ extern "C" {
  *** PROTOTIPOS DE FUNCIONES GLOBALES
 **********************************************************************************************************/
 
-void temp_sensor_Init(uint64_t fs, uint64_t screen_update);
+void joystick_Init(uint64_t fs, void (*joystick_sw_Callback) (void));
+void joystick_update(void);
+void joystick_read(joystick_t *dato);
 
-float temp_sensor_read(void);
 
-float celcius2fahrenheit(float temp_c);
-
-void temp_celcius_update(char* buffer, uint8_t* display,size_t display_leng);
-
-void temp_fahrenheit_update(char* buffer, uint8_t* display,size_t display_leng);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __TEMP_SENSOR_H */
+#endif /* _JOYSTICK_H */

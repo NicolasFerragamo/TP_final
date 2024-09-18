@@ -1,18 +1,18 @@
 /*********************************************************************************************************
  *
- * \file    ${file_name}
- * \brief   Librería para el manejo de matriz de puntos
- * \date    ${date}
- * \author  Nicolás Ferragamo
- * \version 1.0
+ * \file		${file_name}
+ * \brief		
+ * \date		${date}
+ * \author		
+ * \version
 *********************************************************************************************************/
 
 /*********************************************************************************************************
  *** MODULO
 *********************************************************************************************************/
 
-#ifndef __DOT_MATRIX_H
-#define __DOT_MATRIX_H
+#ifndef _ENCODER_H
+#define _ENCODER_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -21,43 +21,27 @@ extern "C" {
 /*********************************************************************************************************
  *** INCLUDES GLOBALES
 *********************************************************************************************************/
+#include <stddef.h>
 #include <stdint.h>
-#include <stdbool.h>
-#include <stdlib.h>
 
 /*********************************************************************************************************
  *** DEFINES GLOBALES
 *********************************************************************************************************/
-
-#define MAX_ROWS 7
-#define MAX_COLS 40
+typedef enum
+{
+    NEUTRO,
+    DERECHA,
+    IZQUIERDA
+} encoder_sentido_e;
 
 /*********************************************************************************************************
  *** MACROS GLOBALES
 *********************************************************************************************************/
-#ifndef _RESERVED_BITS
-#define _RESERVED_BITS
-#define  reserved_bits(x,y,z)   uint8_t reserved_bits##x[z-y+1];
-#endif
+
+
 /*********************************************************************************************************
  *** TIPO DE DATOS GLOBALES
 *********************************************************************************************************/
-/**
- * @enum    estado_barrrido_e
- * @brief   Indica la fila a barrer.
- * @date    ${date}
- * @author  Nicolas Ferragamo nferragamo@frba.utn.edu.ar
- */
-typedef enum
-{ 
-    FILA1 = 0,
-    FILA2,
-    FILA3,
-    FILA4,
-    FILA5,
-    FILA6,
-    FILA7
-} estado_barrrido_e;
 
 
 /*********************************************************************************************************
@@ -67,17 +51,12 @@ typedef enum
 /*********************************************************************************************************
  *** PROTOTIPOS DE FUNCIONES GLOBALES
 **********************************************************************************************************/
+void encoder_Init(void (*encoder_sw_Callback) (void));
+encoder_sentido_e encoder_read(void);
 
-void desplazar_izq(uint8_t* display, size_t cols);
-
-void inicializar_matriz(void);
-
-void enviar_mensaje(uint8_t* display, size_t max_disp, const uint8_t* mensaje);
-
-void barrido_matriz(uint8_t *display);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __DOT_MATRIX_H */
+#endif /*  */

@@ -1,131 +1,305 @@
-//=====[Libraries]=============================================================
+/*********************************************************************************************************
+ * <Module name>
+ * <Module description
+ *
+ * <Copyright>
+ *
+ * <Copyright or distribution terms>
+ *
+ *
+ *********************************************************************************************************/
 
-#include "mbed.h"
-#include "arm_book_lib.h"
+/*********************************************************************************************************
+ * <File description>
+ *
+ * Filename       : Filename
+ * Version        : Module version
+ * Programmer(s)  : Programmer initial(s)
+ **********************************************************************************************************
+ *  Note(s):
+ *
+ *
+ *
+ *********************************************************************************************************/
 
+/*********************************************************************************************************
+ *
+ * \file        ${file_name}
+ * \brief       Descripción del modulo
+ * \date        ${date}
+ * \author      Nicolas Ferragamo nferragamo@est.frba.utn.edu.ar
+ * \version
+ *********************************************************************************************************/
+
+/*********************************************************************************************************
+ *** INCLUDES
+ *********************************************************************************************************/
 #include "user_interface.h"
+#include "arm_book_lib.h"
+#include "delay.h"
+#include "lcd.h"
+#include "mbed.h"
+#include <stddef.h> // para NULL
+#include <string.h>
+#include "encoder.h"
+#include "neopixel.h"
 
-#include "code.h"
-#include "siren.h"
-#include "smart_home_system.h"
-#include "date_and_time.h"
-#include "temperature_sensor.h"
-#include "gas_sensor.h"
-#include "matrix_keypad.h"
+/*********************************************************************************************************
+ *** DEFINES PRIVADOS AL MODULO
+ *********************************************************************************************************/
 
-//=====[Declaration of private defines]========================================
+/*********************************************************************************************************
+ *** MACROS PRIVADAS AL MODULO
+ *********************************************************************************************************/
 
-//=====[Declaration of private data types]=====================================
+/*********************************************************************************************************
+ *** TIPOS DE DATOS PRIVADOS AL MODULO
+ *********************************************************************************************************/
 
-//=====[Declaration and initialization of public global objects]===============
+/*********************************************************************************************************
+ *** TABLAS PRIVADAS AL MODULO
+ *********************************************************************************************************/
 
-DigitalOut incorrectCodeLed(LED3);
-DigitalOut systemBlockedLed(LED2);
+/*********************************************************************************************************
+ *** VARIABLES GLOBALES PUBLICAS
+ *********************************************************************************************************/
 
-//=====[Declaration of external public global variables]=======================
+/*********************************************************************************************************
+ *** VARIABLES GLOBALES PRIVADAS AL MODULO
+ *********************************************************************************************************/
 
-//=====[Declaration and initialization of public global variables]=============
+static MenuItem_t menu_main_play;
+static MenuItem_t menu_main_score;
+static MenuItem_t menu_main_dificulty;
 
-char codeSequenceFromUserInterface[CODE_NUMBER_OF_KEYS];
+static MenuItem_t menu_play_score;
+static MenuItem_t manu_play_back;
 
-//=====[Declaration and initialization of private global variables]============
+static MenuItem_t menu_difficulty_easy;
+static MenuItem_t menu_difficulty_normal;
+static MenuItem_t menu_difficulty_hard;
+static MenuItem_t menu_difficulty_back;
 
-static bool incorrectCodeState = OFF;
-static bool systemBlockedState = OFF;
+static MenuItem_t menu_score_1;
+static MenuItem_t menu_score_2;
+static MenuItem_t menu_score_3;
+static MenuItem_t menu_score_4;
+static MenuItem_t menu_score_5;
+static MenuItem_t menu_score_back;
 
-static bool codeComplete = false;
-static int numberOfCodeChars = 0;
+static MenuItem_t * ptr_inicio = &menu_main_play;
 
-//=====[Declarations (prototypes) of private functions]========================
+delay_t screen_refresh;
 
-static void userInterfaceMatrixKeypadUpdate();
-static void incorrectCodeIndicatorUpdate();
-static void systemBlockedIndicatorUpdate();
+UnbufferedSerial uartUsb(USBTX, USBRX, 115200);     //!< comunicación serial
+char buffer[20] = "";
 
-//=====[Implementations of public functions]===================================
+/*********************************************************************************************************
+ *** PROTOTIPO DE FUNCIONES PRIVADAS AL MODULO
+ *********************************************************************************************************/
 
-void userInterfaceInit()
-{
-    incorrectCodeLed = OFF;
-    systemBlockedLed = OFF;
-    matrixKeypadInit( SYSTEM_TIME_INCREMENT_MS );
+/*********************************************************************************************************
+ *** FUNCIONES PRIVADAS AL MODULO
+ *********************************************************************************************************/
+
+/*********************************************************************************************************
+ *** FUNCIONES GLOBALES AL MODULO
+ *********************************************************************************************************/
+
+/**
+  \fn           delayInit(delay_t *delay, uint64_t duration)
+  \brief        Inicio del temporizador
+  \param        delay [in] estructura del temporizador
+  \param        duration [in] duración del temporizador
+  \author       Nombre
+  \date         ${date}
+  \return       tipo y descripción de retorno
+*/
+
+void menu_init(void) {
+
+    MenuItem_t menu_main_play =     {.item = "Play",
+                                      .accion = NULL,
+                                      .subMenu = &menu_play_score,
+                                      .siguiente = &menu_main_score,
+                                      .anterior = &menu_main_dificulty};
+    // sprintf(buffer,"%s", menu_main_play.item);
+    // uartUsb.write(buffer, strlen(buffer));
+    // uartUsb.write("\r\n",3);
+    MenuItem_t menu_main_score =    {.item = "Score",
+                                      .accion = NULL,
+                                      .subMenu = &menu_difficulty_easy,
+                                      .siguiente = &menu_main_dificulty,
+                                      .anterior = &menu_main_play};
+    // sprintf(buffer,"%s", menu_main_score.item);
+    // uartUsb.write(buffer, strlen(buffer));
+    // uartUsb.write("\r\n",3);
+    MenuItem_t menu_main_dificulty = {.item = "Difficulty",
+                                      .accion = NULL,
+                                      .subMenu = &menu_score_1,
+                                      .siguiente = &menu_main_play,
+                                      .anterior = &menu_main_score};
+    // sprintf(buffer,"%s", menu_main_dificulty.item);
+    // uartUsb.write(buffer, strlen(buffer));
+    // uartUsb.write("\r\n",3);
+    MenuItem_t menu_play_score =    {.item = "Score",
+                                     .accion = NULL,
+                                     .subMenu = NULL,
+                                     .siguiente = &manu_play_back,
+                                     .anterior = &manu_play_back};
+    // sprintf(buffer,"%s", menu_play_score.item);
+    // uartUsb.write(buffer, strlen(buffer)); 
+    // uartUsb.write("\r\n",3);                                
+    MenuItem_t manu_play_back   =   {.item = "Back",
+                                     .accion = NULL, // terminar luego, ir al menú rincipal
+                                     .subMenu = &menu_main_play,
+                                     .siguiente = &menu_play_score,
+                                     .anterior = &menu_play_score};
+    // sprintf(buffer,"%s", manu_play_back.item);
+    // uartUsb.write(buffer, strlen(buffer));
+    // uartUsb.write("\r\n",3);
+
+    MenuItem_t menu_difficulty_easy =   {.item = "Easy",
+                                         .accion = NULL,
+                                         .subMenu = NULL,
+                                         .siguiente = &menu_difficulty_normal,
+                                         .anterior = &menu_difficulty_back};
+    // sprintf(buffer,"%s", menu_difficulty_easy.item);
+    // uartUsb.write(buffer, strlen(buffer));   
+    // uartUsb.write("\r\n",3);                                  
+    MenuItem_t menu_difficulty_normal = {.item = "Normal",
+                                         .accion = NULL,
+                                         .subMenu = NULL,
+                                         .siguiente = &menu_difficulty_hard,
+                                         .anterior = &menu_difficulty_easy};
+    // sprintf(buffer,"%s", menu_difficulty_normal.item);
+    // uartUsb.write(buffer, strlen(buffer));  
+    // uartUsb.write("\r\n",3);                                   
+    MenuItem_t menu_difficulty_hard =   {.item = "Hard",
+                                         .accion = NULL,
+                                         .subMenu = NULL,
+                                         .siguiente = & menu_difficulty_back,
+                                         .anterior = &menu_difficulty_normal};
+    // sprintf(buffer,"%s", menu_difficulty_hard.item);
+    // uartUsb.write(buffer, strlen(buffer)); 
+    // uartUsb.write("\r\n",3);                                    
+    MenuItem_t menu_difficulty_back =   {.item = "Back",
+                                         .accion = NULL,
+                                         .subMenu = &menu_main_play,
+                                         .siguiente = &menu_difficulty_easy,
+                                         .anterior = &menu_difficulty_hard};
+    // sprintf(buffer,"%s", menu_difficulty_back.item);
+    // uartUsb.write(buffer, strlen(buffer));
+    // uartUsb.write("\r\n",3);
+
+    MenuItem_t menu_score_1 =   {.item = "1°:     2°:     ",
+                                 .accion = NULL,
+                                 .subMenu = NULL,
+                                 .siguiente = &menu_score_2,
+                                 .anterior = &menu_score_back};
+    // sprintf(buffer,"%s", menu_score_1.item);
+    // uartUsb.write(buffer, strlen(buffer));  
+    // uartUsb.write("\r\n",3);                           
+    MenuItem_t menu_score_2 =   {.item = "3°:     4°:     ",
+                                 .accion = NULL,
+                                 .subMenu = NULL,
+                                 .siguiente = &menu_score_3,
+                                 .anterior = &menu_score_1};
+    // sprintf(buffer,"%s", menu_score_2.item);
+    // uartUsb.write(buffer, strlen(buffer));  
+    // uartUsb.write("\r\n",3);                           
+    MenuItem_t menu_score_3 =   {.item = "5°:     6°:     ",
+                                 .accion = NULL,
+                                 .subMenu = NULL,
+                                 .siguiente = &menu_score_4,
+                                 .anterior = &menu_score_2};
+    // sprintf(buffer,"%s", menu_score_3.item);
+    // uartUsb.write(buffer, strlen(buffer));   
+    // uartUsb.write("\r\n",3);                          
+    MenuItem_t menu_score_4 =   {.item = "7°:     8°:     ",
+                                 .accion = NULL,
+                                 .subMenu = NULL,
+                                 .siguiente = &menu_score_5,
+                                 .anterior = &menu_score_3};
+    // sprintf(buffer,"%s", menu_score_4.item);
+    // uartUsb.write(buffer, strlen(buffer));  
+    // uartUsb.write("\r\n",3);                           
+    MenuItem_t menu_score_5 =   {.item = "9°:     10°:    ",
+                                 .accion = NULL,
+                                 .subMenu = NULL,
+                                 .siguiente = &menu_score_back,
+                                 .anterior = &menu_score_4};
+    // sprintf(buffer,"%s", menu_score_5.item);
+    // uartUsb.write(buffer, strlen(buffer)); 
+    // uartUsb.write("\r\n",3);                            
+    MenuItem_t menu_score_back = {.item = "Back",
+                                  .accion = NULL,
+                                  .subMenu = &menu_main_play,
+                                  .siguiente = &menu_score_1,
+                                  .anterior = &menu_score_5};
+    // sprintf(buffer,"%s", menu_score_back.item);
+    // uartUsb.write(buffer, strlen(buffer));  
+    // uartUsb.write("\r\n",3);                            
+
+    ptr_inicio = &menu_main_play;
+
+    // sprintf(buffer,"%s", ptr_inicio->item);
+    // uartUsb.write(buffer, strlen(buffer));
+    // uartUsb.write("\r\n",3);
+    // sprintf(buffer,"%s", ptr_inicio->siguiente->item); // no reconoce lo que esta guardado en siguiente->item
+    // uartUsb.write(buffer, strlen(buffer));
+    // uartUsb.write("\r\n",3);
+
+    LCD_Clear();
+    delayInit(&screen_refresh, 100); 
+    delayRead(&screen_refresh);
+    LCD_SetCursor(1, 0);
+    LCD_Msg2LCD(ptr_inicio->item);
+    //LCD_Msg2LCD(menu_main_play.item); 
+    LCD_SetCursor(2, 0);
+    LCD_Msg2LCD(ptr_inicio->siguiente->item); // no reconoce lo que esta guardado en siguiente->item
+    //LCD_Msg2LCD(menu_main_score.item);
 }
 
-void userInterfaceUpdate()
+
+
+void menu_update (void)
 {
-    userInterfaceMatrixKeypadUpdate();
-    incorrectCodeIndicatorUpdate();
-    systemBlockedIndicatorUpdate();
-}
+    encoder_sentido_e giro;
+    neopixel_color_t color = {64,0,0};
+    if(delayRead(&screen_refresh) == true)
+    {
+        delayRead(&screen_refresh);
+         giro = encoder_read();
+            //LCD_SetCursor(1, 11);
+            if (giro == NEUTRO)
+            {
+                //LCD_Char2LCD('N');
+            } else if (giro == DERECHA)
+            {
+               // LCD_Char2LCD('D');
+                color = {64,0,0};
+                neopixel_write(&color);
+                ptr_inicio = ptr_inicio->siguiente;
+                LCD_Clear();
+                LCD_SetCursor(1, 0);
+                LCD_Msg2LCD(ptr_inicio->item);
+                LCD_SetCursor(2, 0);
+                LCD_Msg2LCD(ptr_inicio->siguiente->item);
 
-bool incorrectCodeStateRead()
-{
-    return incorrectCodeState;
-}
-
-void incorrectCodeStateWrite( bool state )
-{
-    incorrectCodeState = state;
-}
-
-bool systemBlockedStateRead()
-{
-    return systemBlockedState;
-}
-
-void systemBlockedStateWrite( bool state )
-{
-    systemBlockedState = state;
-}
-
-bool userInterfaceCodeCompleteRead()
-{
-    return codeComplete;
-}
-
-void userInterfaceCodeCompleteWrite( bool state )
-{
-    codeComplete = state;
-}
-
-//=====[Implementations of private functions]==================================
-
-static void userInterfaceMatrixKeypadUpdate()
-{
-    static int numberOfHashKeyReleased = 0;
-    char keyReleased = matrixKeypadUpdate();
-
-    if( keyReleased != '\0' ) {
-
-        if( sirenStateRead() && !systemBlockedStateRead() ) {
-            if( !incorrectCodeStateRead() ) {
-                codeSequenceFromUserInterface[numberOfCodeChars] = keyReleased;
-                numberOfCodeChars++;
-                if ( numberOfCodeChars >= CODE_NUMBER_OF_KEYS ) {
-                    codeComplete = true;
-                    numberOfCodeChars = 0;
-                }
-            } else {
-                if( keyReleased == '#' ) {
-                    numberOfHashKeyReleased++;
-                    if( numberOfHashKeyReleased >= 2 ) {
-                        numberOfHashKeyReleased = 0;
-                        numberOfCodeChars = 0;
-                        codeComplete = false;
-                        incorrectCodeState = OFF;
-                    }
-                }
+            } else if (giro == IZQUIERDA)
+            {
+                //LCD_Char2LCD('I');
+                color = {0,0,64};
+                neopixel_write(&color);
+                ptr_inicio = ptr_inicio->anterior;
+                LCD_Clear();
+                LCD_SetCursor(1, 0);
+                LCD_Msg2LCD(ptr_inicio->item);
+                LCD_SetCursor(2, 0);
+                LCD_Msg2LCD(ptr_inicio->siguiente->item);
             }
-        }
+
     }
 }
 
-static void incorrectCodeIndicatorUpdate()
-{
-    incorrectCodeLed = incorrectCodeStateRead();
-}
-
-static void systemBlockedIndicatorUpdate()
-{
-    systemBlockedLed = systemBlockedState;
-}

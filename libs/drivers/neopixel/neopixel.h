@@ -1,18 +1,18 @@
 /*********************************************************************************************************
  *
- * \file    ${file_name}
- * \brief   Librería para el manejo de matriz de puntos
- * \date    ${date}
- * \author  Nicolás Ferragamo
- * \version 1.0
+ * \file		${file_name}
+ * \brief		
+ * \date		${date}
+ * \author		
+ * \version
 *********************************************************************************************************/
 
 /*********************************************************************************************************
  *** MODULO
 *********************************************************************************************************/
 
-#ifndef __TEMP_SENSOR_H
-#define __TEMP_SENSOR_H
+#ifndef _NEOPIXEL_H
+#define _NEOPIXEL_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -21,25 +21,28 @@ extern "C" {
 /*********************************************************************************************************
  *** INCLUDES GLOBALES
 *********************************************************************************************************/
+#include <stddef.h>
 #include <stdint.h>
-#include <stdbool.h>
-#include <stdlib.h>
 
 /*********************************************************************************************************
  *** DEFINES GLOBALES
 *********************************************************************************************************/
 
+
 /*********************************************************************************************************
  *** MACROS GLOBALES
 *********************************************************************************************************/
-#ifndef _RESERVED_BITS
-#define _RESERVED_BITS
-#define  reserved_bits(x,y,z)   uint8_t reserved_bits##x[z-y+1];
-#endif
+
+
 /*********************************************************************************************************
  *** TIPO DE DATOS GLOBALES
 *********************************************************************************************************/
-
+typedef struct
+{
+    uint8_t G;
+    uint8_t R;
+    uint8_t B;
+} neopixel_color_t;
 
 /*********************************************************************************************************
  *** VARIABLES GLOBALES
@@ -48,19 +51,11 @@ extern "C" {
 /*********************************************************************************************************
  *** PROTOTIPOS DE FUNCIONES GLOBALES
 **********************************************************************************************************/
+void neopixel_write(const neopixel_color_t * color);
 
-void temp_sensor_Init(uint64_t fs, uint64_t screen_update);
-
-float temp_sensor_read(void);
-
-float celcius2fahrenheit(float temp_c);
-
-void temp_celcius_update(char* buffer, uint8_t* display,size_t display_leng);
-
-void temp_fahrenheit_update(char* buffer, uint8_t* display,size_t display_leng);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __TEMP_SENSOR_H */
+#endif /*  */

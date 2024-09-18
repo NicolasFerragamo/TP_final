@@ -49,6 +49,7 @@
 /*********************************************************************************************************
  *** TIPOS DE DATOS PRIVADOS AL MODULO
  *********************************************************************************************************/
+Ticker temp_1ms;   //!< temporizador de 1ms se usa para dar el tiempo a la librería delay
 
 /*********************************************************************************************************
  *** TABLAS PRIVADAS AL MODULO
@@ -152,4 +153,18 @@ void delayWrite(delay_t *delay, uint64_t duration)
 void delay_1ms (void)
 {
     total_ms++;
+}
+
+
+/**
+  \fn           delay_1ms(void)
+  \brief        Esta función se usa como callback de un temporizador que actualiza
+                cada 1ms. este tiempo se utiliza para el barrid y para el desplaamiento
+                del cartel
+  \author       Nombre
+  \date         ${date}
+*/
+void delay_1ms_init(void)
+{
+    temp_1ms.attach(&delay_1ms, 1ms);
 }
