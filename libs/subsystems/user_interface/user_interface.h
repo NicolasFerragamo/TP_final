@@ -11,12 +11,12 @@
  *** MODULO
 *********************************************************************************************************/
 
-#ifndef __DOT_MATRIX_H
-#define __DOT_MATRIX_H
+#ifndef _USER_INTERFACE_H_
+#define _USER_INTERFACE_H_
 
-#ifdef __cplusplus
+/*#ifdef __cplusplus
 extern "C" {
-#endif
+#endif*/
 
 /*********************************************************************************************************
  *** INCLUDES GLOBALES
@@ -24,14 +24,12 @@ extern "C" {
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include "mbed.h"
 
 /*********************************************************************************************************
  *** DEFINES GLOBALES
 *********************************************************************************************************/
-
-#define MAX_ROWS 7
-#define MAX_COLS 40
-
+#define MAX_BUFFER 20    
 /*********************************************************************************************************
  *** MACROS GLOBALES
 *********************************************************************************************************/
@@ -43,22 +41,21 @@ extern "C" {
  *** TIPO DE DATOS GLOBALES
 *********************************************************************************************************/
 /**
- * @enum    estado_barrrido_e
- * @brief   Indica la fila a barrer.
+ * @struct  delay_t
+ * @brief   Contiene las variables necesarias para el maneo de los delays
  * @date    ${date}
  * @author  Nicolas Ferragamo nferragamo@frba.utn.edu.ar
  */
-typedef enum
-{ 
-    FILA1 = 0,
-    FILA2,
-    FILA3,
-    FILA4,
-    FILA5,
-    FILA6,
-    FILA7
-} estado_barrrido_e;
 
+// Estructura que representa un ítem del menú
+typedef struct MenuItem {
+    //const char *item; // Nombre del ítem a mostrar en el LCD
+    char item[MAX_BUFFER];
+    void (*accion)(void); // Acción a ejecutar cuando se selecciona el ítem
+    struct MenuItem *subMenu; // Puntero al submenú, si existe
+    struct MenuItem *siguiente; // Puntero al siguiente ítem del mismo nivel
+    struct MenuItem *anterior; // Puntero al anterior ítem del mismo nivel
+} MenuItem_t;
 
 /*********************************************************************************************************
  *** VARIABLES GLOBALES
@@ -68,16 +65,15 @@ typedef enum
  *** PROTOTIPOS DE FUNCIONES GLOBALES
 **********************************************************************************************************/
 
-void desplazar_izq(uint8_t* display, size_t cols);
+void menu_init (void);
+void menu_update (void);
+//void play (void);
+//void score (void);
+//void dificulty (void);
 
-void inicializar_matriz(void);
-
-void enviar_mensaje(uint8_t* display, size_t max_disp, const uint8_t* mensaje);
-
-void barrido_matriz(uint8_t *display);
-
-#ifdef __cplusplus
+/*#ifdef __cplusplus
 }
-#endif
+#endif*/
 
-#endif /* __DOT_MATRIX_H */
+#endif /* __DELAY_H */
+

@@ -1,20 +1,18 @@
-//=====[#include guards - begin]===============================================
-
 /*********************************************************************************************************
  *
- * \file    ${file_name}
- * \brief   Librería para el manejo de matriz de puntos
- * \date    ${date}
- * \author  Nicolás Ferragamo
- * \version 1.0
+ * \file		${file_name}
+ * \brief		
+ * \date		${date}
+ * \author		
+ * \version
 *********************************************************************************************************/
 
 /*********************************************************************************************************
  *** MODULO
 *********************************************************************************************************/
 
-#ifndef __DELAY_H
-#define __DELAY_H
+#ifndef _ENCODER_H
+#define _ENCODER_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -23,36 +21,28 @@ extern "C" {
 /*********************************************************************************************************
  *** INCLUDES GLOBALES
 *********************************************************************************************************/
+#include <stddef.h>
 #include <stdint.h>
-#include <stdbool.h>
-#include <stdlib.h>
 
 /*********************************************************************************************************
  *** DEFINES GLOBALES
 *********************************************************************************************************/
+typedef enum
+{
+    NEUTRO,
+    DERECHA,
+    IZQUIERDA
+} encoder_sentido_e;
 
 /*********************************************************************************************************
  *** MACROS GLOBALES
 *********************************************************************************************************/
-#ifndef _RESERVED_BITS
-#define _RESERVED_BITS
-#define  reserved_bits(x,y,z)   uint8_t reserved_bits##x[z-y+1];
-#endif
+
+
 /*********************************************************************************************************
  *** TIPO DE DATOS GLOBALES
 *********************************************************************************************************/
-/**
- * @struct  delay_t
- * @brief   Contiene las variables necesarias para el maneo de los delays
- * @date    ${date}
- * @author  Nicolas Ferragamo nferragamo@frba.utn.edu.ar
- */
-typedef struct
-{
-    uint64_t startTime;
-    uint64_t duration;
-    bool running;
-} delay_t;
+
 
 /*********************************************************************************************************
  *** VARIABLES GLOBALES
@@ -61,18 +51,12 @@ typedef struct
 /*********************************************************************************************************
  *** PROTOTIPOS DE FUNCIONES GLOBALES
 **********************************************************************************************************/
-
-void delayInit(delay_t *delay, uint64_t duration);
-
-bool delayRead(delay_t *delay);
-
-void delayWrite(delay_t *delay, uint64_t duration);
-
-void delay_1ms (void);
+void encoder_Init(void (*encoder_sw_Callback) (void));
+encoder_sentido_e encoder_read(void);
 
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __DELAY_H */
+#endif /*  */
